@@ -1,0 +1,19 @@
+{
+  "name": "tool_und_plug",
+  "version": "1.0.0",
+  "description": "Tool und Plugin Abschlussporjekt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estib-vega/tool_und_plug.git"
+  },
+  "author": "J. Esteban Vega",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/estib-vega/tool_und_plug/issues"
+  },
+  "homepage": "https://github.com/estib-vega/tool_und_plug#readme"
+}
