@@ -18,5 +18,8 @@
   "homepage": "https://github.com/estib-vega/tool_und_plug#readme",
   "dependencies": {
     "jimp": "^0.6.0"
+  },
+  "devDependencies": {
+    "pkg": "^4.3.5"
   }
 }
