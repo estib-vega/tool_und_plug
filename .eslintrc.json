@@ -9,6 +9,8 @@
         "sourceType": "module"
     },
     "rules": {
+        "no-trailing-spaces":"error",
+        "space-infix-ops": "error",
         "indent": [
             "error",
             4
@@ -23,7 +25,7 @@
         ],
         "semi": [
             "error",
-            "never"
+            "always"
         ],
         "no-console":"off",
         "no-multiple-empty-lines":"error",

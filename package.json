@@ -18,10 +18,15 @@
   },
   "homepage": "https://github.com/estib-vega/tool_und_plug#readme",
   "dependencies": {
-    "jimp": "^0.6.0"
+    "cheerio": "^1.0.0-rc.2",
+    "fs-extra": "^7.0.1",
+    "jimp": "^0.6.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "eslint": "^5.10.0",
-    "pkg": "^4.3.5"
+    "pkg": "^4.3.5",
+    "prettier": "^1.15.3"
   }
 }
