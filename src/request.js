@@ -7,12 +7,12 @@ const fs = require('fs-extra');
 const REQUEST_HEADER = { 'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36' };
 const OUTPUT_DIR = 'downloaded_imgs';
 const IMAGE_DATA_CONTAINER_SELECTOR = 'div.rg_meta';
-const NUMBER_OF_DOWNLOADED_IMAGES = 16;
+const NUMBER_OF_DOWNLOADED_IMAGES = 32;
 const ALLOWED_IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const outputDirPath = path.join(process.cwd(), OUTPUT_DIR);
 
-const buildUrl = query => `https://www.google.co.in/search?q=${query}&source=lnms&tbm=isch`;
+const buildUrl = query => `https://www.google.co.in/search?q=${query}&tbs=isz:m&source=lnms&tbm=isch`;
 
 const isAllowedImageType = type => ALLOWED_IMAGE_TYPES.includes(type.toLowerCase());
 
@@ -69,14 +69,16 @@ const downloadSingleImage = ({ imageType, imageUrl }, index) =>
         );
 
 const downloadImagesFromList = imageDataList =>
-    imageDataList.forEach(downloadSingleImage);
+    imageDataList.forEach(async (imageData, index) => {
+        await downloadSingleImage(imageData, index);
+    });
 
 const downloadImagesOf = searchQuery =>{
     setUpDownloadDirectory();
-    getGoogleImagesSiteFor(searchQuery)
+    return getGoogleImagesSiteFor(searchQuery)
         .then(getImagesTypeAndUrlList)
         .then(downloadImagesFromList)
         .catch(e => console.log(e.message));
 };
 
-module.exports = downloadImagesOf;
+module.exports = { downloadImagesOf, OUTPUT_DIR };
