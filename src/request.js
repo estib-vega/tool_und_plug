@@ -12,7 +12,7 @@ const ALLOWED_IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const outputDirPath = path.join(process.cwd(), OUTPUT_DIR);
 
-const buildUrl = query => `https://www.google.co.in/search?q=${query}&tbs=isz:m&source=lnms&tbm=isch`;
+const buildUrl = (query) => `https://www.google.co.in/search?q=${query.join('+')}&tbs=isz:m&source=lnms&tbm=isch`;
 
 const isAllowedImageType = type => ALLOWED_IMAGE_TYPES.includes(type.toLowerCase());
 
@@ -60,17 +60,22 @@ const buildImagePath = (index, imageType) => {
     return path.join(outputDirPath, imageName);
 };
 
-const downloadSingleImage = ({ imageType, imageUrl }, index) =>
-    request({ uri: imageUrl, headers: REQUEST_HEADER })
+const downloadSingleImage = ({ imageType, imageUrl }, index) => new Promise((resolve, reject) => {
+    const stream = request({ uri: imageUrl, headers: REQUEST_HEADER }, (error) => {
+        if(error)
+            reject('Could not download');
+    })
         .pipe(
             fs.createWriteStream(
                 buildImagePath(index, imageType)
             )
         );
+    stream.on('close', resolve);
+});
 
 const downloadImagesFromList = imageDataList =>
     imageDataList.forEach(async (imageData, index) => {
-        await downloadSingleImage(imageData, index);
+        await downloadSingleImage(imageData, index).catch(error => error);
     });
 
 const downloadImagesOf = searchQuery =>{

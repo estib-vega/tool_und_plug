@@ -25,13 +25,17 @@ const printProgressMessage = (i, j) => {
 const calculatePixelSize = ({ width, height, img }) => {
     const minSize = width < height ? width : height;
     const pixelSize = Math.floor(minSize / NUMBER_OF_ROWS_AND_COLUMNS);
-    return { img, pixelSize };
+    return { img, pixelSize, width, height };
 };
 
-const pixelateAndResize = ({ img, pixelSize }) => {
+const pixelateAndResize = ({ img, pixelSize, width, height }) => {
     const size = pixelSize * NUMBER_OF_ROWS_AND_COLUMNS;
-    img.resize(size, size)
-        .pixelate(pixelSize);
+    if(width < height)
+        img.resize(size, AUTO);
+    else
+        img.resize(AUTO, size);
+    img.crop(0, 0, size, size).pixelate(pixelSize);
+
     return { img, pixelSize };
 };
 
