@@ -6,9 +6,16 @@ const NUMBER_OF_ROWS_AND_COLUMNS = 32;
 const COLORIZATION_LEVEL = 55;
 const ERROR_MESSAGE_OF_INVALID_IMAGE = 'Unsupported MIME type:';
 
-const totalPixelsToRender = NUMBER_OF_ROWS_AND_COLUMNS * NUMBER_OF_ROWS_AND_COLUMNS;
+let globalArgs = {};
 
 const isUnsupportedImage = error => error.message.startsWith(ERROR_MESSAGE_OF_INVALID_IMAGE);
+
+const getNumberOfRowsAndColumns = () => (globalArgs.size && globalArgs.size.length > 0 && globalArgs.size) ||
+                                        (globalArgs.s && globalArgs.s.length > 0 && globalArgs.s) ||
+                                        NUMBER_OF_ROWS_AND_COLUMNS;
+
+
+const getTotalPixelsToRender = () => getNumberOfRowsAndColumns() * getNumberOfRowsAndColumns();
 
 const getPercentage = (currentProgress, total) => {
     const unit = total / 100.0;
@@ -16,20 +23,20 @@ const getPercentage = (currentProgress, total) => {
 };
 
 const printProgressMessage = (i, j) => {
-    const pixelsRendered = j + NUMBER_OF_ROWS_AND_COLUMNS * i + 1;
-    const percentage = getPercentage(pixelsRendered, totalPixelsToRender);
+    const pixelsRendered = j + getNumberOfRowsAndColumns() * i + 1;
+    const percentage = getPercentage(pixelsRendered, getTotalPixelsToRender());
     readline.cursorTo(process.stdout, 0);
-    process.stdout.write(`${percentage}% - Rendered ${pixelsRendered} out of ${totalPixelsToRender} pixels`);
+    process.stdout.write(`${percentage}% - Rendered ${pixelsRendered} out of ${getTotalPixelsToRender()} pixels`);
 };
 
 const calculatePixelSize = ({ width, height, img }) => {
     const minSize = width < height ? width : height;
-    const pixelSize = Math.floor(minSize / NUMBER_OF_ROWS_AND_COLUMNS);
+    const pixelSize = Math.floor(minSize / getNumberOfRowsAndColumns());
     return { img, pixelSize, width, height };
 };
 
 const pixelateAndResize = ({ img, pixelSize, width, height }) => {
-    const size = pixelSize * NUMBER_OF_ROWS_AND_COLUMNS;
+    const size = pixelSize * getNumberOfRowsAndColumns();
     if(width < height)
         img.resize(size, AUTO);
     else
@@ -71,14 +78,15 @@ const getRandomPathFrom = downloadedImages => {
     return downloadedImages[randomIndex];
 };
 
-const generateImage = (srcImage, downloadedImagePaths) =>
-    openAndPixelateImage(srcImage)
+const generateImage = async (srcImage, downloadedImagePaths, args) => {
+    globalArgs = args;
+    await openAndPixelateImage(srcImage)
         .then(async imageData => {
             const cache = {};
             cache.imagePaths = downloadedImagePaths;
 
-            for(let i = 0; i < NUMBER_OF_ROWS_AND_COLUMNS; i++) {
-                for(let j = 0; j < NUMBER_OF_ROWS_AND_COLUMNS; j++) {
+            for(let i = 0; i < getNumberOfRowsAndColumns(); i++) {
+                for(let j = 0; j < getNumberOfRowsAndColumns(); j++) {
                     const randomImage = getRandomPathFrom(cache.imagePaths);
                     const pathOfRandomDownloadedImage = path.join('downloaded_imgs', randomImage);
 
@@ -105,5 +113,5 @@ const generateImage = (srcImage, downloadedImagePaths) =>
         })
         .then(img => img.write('img/out.jpg'))
         .catch(error => console.log('Error: generateImage:', error.message));
-
+};
 module.exports = generateImage;
