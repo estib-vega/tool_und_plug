@@ -4,11 +4,22 @@ const cheerio = require('cheerio');
 const path = require('path');
 const fs = require('fs-extra');
 
+let globalArgs = {};
+
 const REQUEST_HEADER = { 'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36' };
 const OUTPUT_DIR = 'downloaded_imgs';
 const IMAGE_DATA_CONTAINER_SELECTOR = 'div.rg_meta';
 const NUMBER_OF_DOWNLOADED_IMAGES = 32;
+const MAX_NUMBER_OF_DOWNLOADED_IMAGES = 64;
 const ALLOWED_IMAGE_TYPES = ['jpg', 'jpeg', 'png'];
+
+const getNumberOfImagesToDownload = () => {
+    const tentativeNumberOfImagesToDownload = (globalArgs.i && globalArgs.i.length > 0 && globalArgs.i) ||
+    (globalArgs.images && globalArgs.images.length > 0 && globalArgs.images) ||
+    NUMBER_OF_DOWNLOADED_IMAGES;
+
+    return tentativeNumberOfImagesToDownload < MAX_NUMBER_OF_DOWNLOADED_IMAGES ? tentativeNumberOfImagesToDownload : MAX_NUMBER_OF_DOWNLOADED_IMAGES;
+};
 
 const outputDirPath = path.join(process.cwd(), OUTPUT_DIR);
 
@@ -41,7 +52,7 @@ const getImagesTypeAndUrlList = (response) => {
     const imageDataList = [];
     let indexShift = 1;
 
-    for(let i = 0; i < NUMBER_OF_DOWNLOADED_IMAGES; i++) {
+    for(let i = 0; i < getNumberOfImagesToDownload(); i++) {
         const divId = String(i + indexShift);
         const imageData = getImageData(allDivs, divId);
         if(isAllowedImageType(imageData.ity))
@@ -78,7 +89,8 @@ const downloadImagesFromList = imageDataList =>
         await downloadSingleImage(imageData, index).catch(error => error);
     });
 
-const downloadImagesOf = searchQuery =>{
+const downloadImagesOf = (searchQuery, args) => {
+    globalArgs = args;
     setUpDownloadDirectory();
     return getGoogleImagesSiteFor(searchQuery)
         .then(getImagesTypeAndUrlList)
