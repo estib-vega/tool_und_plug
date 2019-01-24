@@ -11,6 +11,7 @@ let globalArgs = {};
 
 const isUnsupportedImage = error => error.message.startsWith(ERROR_MESSAGE_OF_INVALID_IMAGE);
 
+<<<<<<< HEAD
 const getNumberOfRowsAndColumns = () => (globalArgs.size && globalArgs.size.length > 0 && globalArgs.size[0]) ||
                                         (globalArgs.s && globalArgs.s.length > 0 && globalArgs.s[0]) ||
                                         NUMBER_OF_ROWS_AND_COLUMNS;
@@ -19,6 +20,12 @@ const parseOutput = () => (globalArgs.output && globalArgs.output.length === 1 &
                           (globalArgs.o && globalArgs.o.length === 1 && globalArgs.o[0]) ||
                           DEFAULT_OUTPUT_IMAGE_PATH;
 
+=======
+const getNumberOfRowsAndColumns = () => (globalArgs.size && globalArgs.size.length > 0 && globalArgs.size) ||
+                                        (globalArgs.s && globalArgs.s.length > 0 && globalArgs.s) ||
+                                        NUMBER_OF_ROWS_AND_COLUMNS;
+
+>>>>>>> 07a92399784353430ee9078b8da79c952c079a34
 
 const getTotalPixelsToRender = () => getNumberOfRowsAndColumns() * getNumberOfRowsAndColumns();
 
