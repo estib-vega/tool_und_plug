@@ -5,7 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "dist-lin": "pkg -t node10-linux-x64 --output dist/linux/msk src/index.js",
+    "dist-win": "pkg -t node10-win-x64 --output dist/windows/msk.exe src/index.js",
+    "dist-mac": "pkg -t node10-macos-x64 --output dist/osx/msk src/index.js",
+    "dist": "npm run dist-lin && npm run dist-win && npm run dist-mac"
   },
   "repository": {
     "type": "git",

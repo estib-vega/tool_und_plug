@@ -1,3 +1,7 @@
 node_modules
 img
 downloaded_imgs
+dist
+*.jpg
+*.pdf
+*.docx
